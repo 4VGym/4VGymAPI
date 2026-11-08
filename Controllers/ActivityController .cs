@@ -10,11 +10,13 @@ namespace _4VGymAPI.Controllers
     {
 
         private readonly InMemoryActivityRepository _repository;
+        private readonly ActivityRepository _activityRepository;
 
         // Inyectamos la clase concreta del repositorio
-        public ActivityController(InMemoryActivityRepository repository)
+        public ActivityController(InMemoryActivityRepository repository, ActivityRepository activityRepository)
         {
             _repository = repository;
+            _activityRepository = activityRepository;
         }
 
         /// <summary>
@@ -25,12 +27,12 @@ namespace _4VGymAPI.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(ActivityCreateDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
-        public ActionResult<ActivityCreateDto> CreateActivity([FromBody] ActivityCreateDto activity)
+        public async Task<ActionResult<ActivityCreateDto>> CreateActivity([FromBody] ActivityCreateDto activity)
         {
             try
             {
                 List<ErrorResponse> errors = new List<ErrorResponse>();
-                ActivityCreateDto? activityCreated = _repository.Add(activity, out errors);
+                ActivityCreateDto? activityCreated = await _activityRepository.Add(activity, errors);
                 if (activityCreated == null)
                 {
                     return BadRequest(errors);
