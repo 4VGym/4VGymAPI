@@ -1,7 +1,7 @@
 ﻿using _4VGymAPI.Dtos;
 using _4VGymAPI.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq; // si no está ya
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace _4VGymAPI.Controllers
@@ -12,7 +12,6 @@ namespace _4VGymAPI.Controllers
     {
         private readonly InstructorRepository _instructorRepository;
 
-        // Inyectamos la clase concreta del repositorio
         public InstructorsController(InstructorRepository instructorRepository)
         {
             _instructorRepository = instructorRepository;
@@ -26,7 +25,6 @@ namespace _4VGymAPI.Controllers
         {
             try
             {
-                // 1. Búsqueda por ID (retorna una lista de 1 solo elemento)
                 if (id.HasValue)
                 {
                     InstructorCreateDto? instructor = await _instructorRepository.GetById(id.Value);
@@ -37,14 +35,12 @@ namespace _4VGymAPI.Controllers
                     return Ok(new[] { instructor });
                 }
 
-                // 2. Búsqueda por inicial
                 if (!string.IsNullOrWhiteSpace(firstInitial))
                 {
                     IEnumerable<InstructorCreateDto> instructorsByInitial = await _instructorRepository.GetByFirstInitial(firstInitial);
                     return Ok(instructorsByInitial);
                 }
 
-                // 3. Sin parámetros: devuelve todos los instructores
                 IEnumerable<InstructorCreateDto> allInstructors = await _instructorRepository.GetAll();
                 return Ok(allInstructors);
             }
@@ -56,7 +52,6 @@ namespace _4VGymAPI.Controllers
                 );
             }
         }
-        // Expresiones regulares para validaciones (puedes definirlas a nivel de clase)
         private static readonly Regex SoloNumerosRegex = new Regex(@"^[0-9]+$", RegexOptions.Compiled);
         private static readonly Regex EmailRegex = new Regex(@"^[^@\s]+@gmail.com", RegexOptions.Compiled);
 
@@ -68,33 +63,26 @@ namespace _4VGymAPI.Controllers
         {
             try
             {
-                // Controlo que reciba un instructor
                 if (instructorNew.isEmpty())
                 {
                     return BadRequest(new ErrorResponse(3, "Invalid instructor"));
                 }
 
-                // Con nopmbre
                 if (string.IsNullOrWhiteSpace(instructorNew.Name))
                 {
                     return BadRequest(new ErrorResponse(4, "The name of the instructor is mandatory"));
                 }
 
-                // El teléfono es obligatorio en API y debe contener solo números 
                 if (string.IsNullOrWhiteSpace(instructorNew.Phone) || !SoloNumerosRegex.IsMatch(instructorNew.Phone))
                 {
                     return BadRequest(new ErrorResponse(4, "The telephone of the instructor is mandatory and must contain only digits"));
                 }
 
-                // El email es obligatorio y debe tener formato válido
                 if (string.IsNullOrWhiteSpace(instructorNew.Email) || !EmailRegex.IsMatch(instructorNew.Email))
                 {
                     return BadRequest(new ErrorResponse(4, "The email is mandatory and must be a valid email address"));
                 }
 
-                // la URL de la foto debe ser válida y empezar por http o https
-                // Uri.TryCreate: Intenta convertir la cadena en una dirección URL absoluta bien formada (devolviendo true/false si lo consigue)
-                // uriResult.Scheme != Uri.UriSchemeHttp Revisa el protocolo (esquema) de la URL almacenada en uriResult. Si el protocolo no es ni http ni https
                 if (string.IsNullOrWhiteSpace(instructorNew.PhotoUrl) ||
                     !Uri.TryCreate(instructorNew.PhotoUrl, UriKind.Absolute, out Uri? uriResult) ||
                     (uriResult.Scheme != Uri.UriSchemeHttp && uriResult.Scheme != Uri.UriSchemeHttps))
@@ -103,13 +91,11 @@ namespace _4VGymAPI.Controllers
                 }
 
 
-                // LLamamos al método para añadirlo en el repositorio
                 InstructorCreateDto? instructor = await _instructorRepository.Add(instructorNew);
                 if (instructor == null)
                 {
                     return BadRequest(new ErrorResponse(34, "An instructor with the same email or name already exists"));
                 }
-                // Respuesta 201 Created con el objeto InstructorCreateDto realmente creado, incluyendo el Id
                 return StatusCode(StatusCodes.Status201Created, instructor);
             }
             catch (Exception)
