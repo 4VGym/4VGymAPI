@@ -1,10 +1,10 @@
-﻿using _4VGymAPI.Models;
+﻿using _4VGymAPI.Dtos;
 
 namespace _4VGymAPI.Repositories
 {
     public class InMemoryActivityRepository
     {
-        private List<Activity> _activities = new();
+        private List<ActivityCreateDto> _activities = new();
 
         private readonly InMemoryActivityTypeRepository _repositoryActivityType;
         private readonly InMemoryInstructorRepository _repositoryInstructor;
@@ -18,7 +18,7 @@ namespace _4VGymAPI.Repositories
         }
 
 
-        public Activity? Add(Activity activity, out List<ErrorResponse> errorResponse)
+        public ActivityCreateDto? Add(ActivityCreateDto activity, out List<ErrorResponse> errorResponse)
         {
 
             errorResponse = new List<ErrorResponse>();

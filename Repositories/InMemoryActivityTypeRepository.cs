@@ -1,10 +1,10 @@
-﻿using _4VGymAPI.Models;
+﻿using _4VGymAPI.Dtos;
 
 namespace _4VGymAPI.Repositories
 {
     public class InMemoryActivityTypeRepository
     {
-        private List<ActivityType> _activityTypes = new();
+        private List<ActivityTypeCreateDto> _activityTypes = new();
 
         private int _nextId = 1; // Para el autonumerico
         public InMemoryActivityTypeRepository()
@@ -13,16 +13,16 @@ namespace _4VGymAPI.Repositories
         }
         private void SeedData()
         {
-            _activityTypes = new List<ActivityType>()
+            _activityTypes = new List<ActivityTypeCreateDto>()
             {
-                new ActivityType (_nextId++, "BodyPump",  2 ),
-                new ActivityType ( _nextId++, "Spinning",  1 ),
-                new ActivityType { Id = _nextId++, Name = "Pilates", NumberMonitors = 1 }
+                new ActivityTypeCreateDto (_nextId++, "BodyPump",  2 ),
+                new ActivityTypeCreateDto ( _nextId++, "Spinning",  1 ),
+                new ActivityTypeCreateDto { Id = _nextId++, Name = "Pilates", NumberMonitors = 1 }
             };
-            _activityTypes.Add(new ActivityType(40, "CrossFit", 3));
+            _activityTypes.Add(new ActivityTypeCreateDto(40, "CrossFit", 3));
         }
         // Método para obtener todos los tipos de actividades
-        public IEnumerable<ActivityType> GetAll()
+        public IEnumerable<ActivityTypeCreateDto> GetAll()
         {
             return _activityTypes;
         }
@@ -34,7 +34,7 @@ namespace _4VGymAPI.Repositories
         /// </summary>
         /// <param name="activityType">Objeto con los datos a guardar (sin ID o con ID no asignado).</param>
         /// <returns>La entidad guardada con su ID autogenerado.</returns>
-        public ActivityType Add(ActivityType activityType)
+        public ActivityTypeCreateDto Add(ActivityTypeCreateDto activityType)
         {
             // Asignamos el ID autoincremental en la capa de datos, o sea que machacamos el que venia
             activityType.Id = _nextId++;
@@ -46,13 +46,13 @@ namespace _4VGymAPI.Repositories
         }
 
         // Método para obtener todos los tipos de actividades por Nombre
-        public ActivityType? GetByName(string name)
+        public ActivityTypeCreateDto? GetByName(string name)
         {
             return _activityTypes.SingleOrDefault(at =>
                             string.Equals(at.Name, name, StringComparison.OrdinalIgnoreCase));
         }
 
-        public ActivityType? GetById(int? id)
+        public ActivityTypeCreateDto? GetById(int? id)
         {
             if (id == null)
                 return null;

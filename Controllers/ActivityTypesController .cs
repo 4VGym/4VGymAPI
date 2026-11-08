@@ -1,4 +1,4 @@
-﻿using _4VGymAPI.Models;
+﻿using _4VGymAPI.Dtos;
 using _4VGymAPI.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,13 +21,13 @@ namespace _4VGymAPI.Controllers
         /// Devuelve el listado de tipos de actividades de 4VGym.
         /// </summary>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<ActivityType>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<ActivityTypeCreateDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
-        public ActionResult<IEnumerable<ActivityType>> FindActivityTypes()
+        public ActionResult<IEnumerable<ActivityTypeCreateDto>> FindActivityTypes()
         {
             try
             {
-                IEnumerable<ActivityType> activityTypes = _repository.GetAll();
+                IEnumerable<ActivityTypeCreateDto> activityTypes = _repository.GetAll();
 
                 if (activityTypes == null || activityTypes.Count() == 0)
                 {
@@ -48,9 +48,9 @@ namespace _4VGymAPI.Controllers
         /// </summary>
         /// <param name="activityType">ObjetoActivityType enviado en el cuerpo de la petición (JSON).</param>
         [HttpPost]
-        [ProducesResponseType(typeof(ActivityType), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ActivityTypeCreateDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
-        public ActionResult<ActivityType> CreateActivityType([FromBody] ActivityType activityType)
+        public ActionResult<ActivityTypeCreateDto> CreateActivityType([FromBody] ActivityTypeCreateDto activityType)
         {
             try
             {
@@ -73,7 +73,7 @@ namespace _4VGymAPI.Controllers
 
 
                 // 2. Insertar/Guardar el objeto usando el repositorio
-                ActivityType createdActivityType = _repository.Add(activityType);
+                ActivityTypeCreateDto createdActivityType = _repository.Add(activityType);
 
                 // 3. Retornar respuesta 201 Created con la ubicación o el objeto creado
                 return StatusCode(StatusCodes.Status201Created, createdActivityType);

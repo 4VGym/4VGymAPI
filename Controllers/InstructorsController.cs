@@ -1,4 +1,4 @@
-﻿using _4VGymAPI.Models;
+﻿using _4VGymAPI.Dtos;
 using _4VGymAPI.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq; // si no está ya
@@ -19,17 +19,17 @@ namespace _4VGymAPI.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<Instructor>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<InstructorCreateDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        public ActionResult<IEnumerable<Instructor>> GetInstructors([FromQuery] int? id, [FromQuery(Name = "first_initial")] string? firstInitial)
+        public ActionResult<IEnumerable<InstructorCreateDto>> GetInstructors([FromQuery] int? id, [FromQuery(Name = "first_initial")] string? firstInitial)
         {
             try
             {
                 // 1. Búsqueda por ID (retorna una lista de 1 solo elemento)
                 if (id.HasValue)
                 {
-                    Instructor? instructor = _repository.GetById(id.Value);
+                    InstructorCreateDto? instructor = _repository.GetById(id.Value);
                     if (instructor == null)
                     {
                         return NotFound(new ErrorResponse(2, $"No existe el instructor con ID {id.Value}"));
@@ -40,12 +40,12 @@ namespace _4VGymAPI.Controllers
                 // 2. Búsqueda por inicial
                 if (!string.IsNullOrWhiteSpace(firstInitial))
                 {
-                    IEnumerable<Instructor> instructorsByInitial = _repository.GetByFirstInitial(firstInitial);
+                    IEnumerable<InstructorCreateDto> instructorsByInitial = _repository.GetByFirstInitial(firstInitial);
                     return Ok(instructorsByInitial);
                 }
 
                 // 3. Sin parámetros: devuelve todos los instructores
-                IEnumerable<Instructor> allInstructors = _repository.GetAll();
+                IEnumerable<InstructorCreateDto> allInstructors = _repository.GetAll();
                 return Ok(allInstructors);
             }
             catch (Exception ex)
@@ -61,10 +61,10 @@ namespace _4VGymAPI.Controllers
         private static readonly Regex EmailRegex = new Regex(@"^[^@\s]+@gmail.com", RegexOptions.Compiled);
 
         [HttpPost]
-        [ProducesResponseType(typeof(Instructor), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(InstructorCreateDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        public ActionResult<Instructor> CreateInstructor([FromBody] Instructor instructorNew)
+        public ActionResult<InstructorCreateDto> CreateInstructor([FromBody] InstructorCreateDto instructorNew)
         {
             try
             {
@@ -104,12 +104,12 @@ namespace _4VGymAPI.Controllers
 
 
                 // LLamamos al método para añadirlo en el repositorio
-                Instructor? instructor = _repository.Add(instructorNew, out ErrorResponse? errorResponse);
+                InstructorCreateDto? instructor = _repository.Add(instructorNew, out ErrorResponse? errorResponse);
                 if (errorResponse != null)
                 {
                     return BadRequest(errorResponse);
                 }
-                // Respuesta 201 Created con el objeto Instructor realmente creado, incluyendo el Id
+                // Respuesta 201 Created con el objeto InstructorCreateDto realmente creado, incluyendo el Id
                 return StatusCode(StatusCodes.Status201Created, instructor);
             }
             catch (Exception)

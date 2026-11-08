@@ -1,4 +1,4 @@
-﻿using _4VGymAPI.Models;
+﻿using _4VGymAPI.Dtos;
 using _4VGymAPI.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,14 +23,14 @@ namespace _4VGymAPI.Controllers
         /// </summary>
         /// <param name="activity">ObjetoActivity enviado en el cuerpo de la petición (JSON).</param>
         [HttpPost]
-        [ProducesResponseType(typeof(Activity), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ActivityCreateDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
-        public ActionResult<Activity> CreateActivity([FromBody] Activity activity)
+        public ActionResult<ActivityCreateDto> CreateActivity([FromBody] ActivityCreateDto activity)
         {
             try
             {
                 List<ErrorResponse> errors = new List<ErrorResponse>();
-                Activity? activityCreated = _repository.Add(activity, out errors);
+                ActivityCreateDto? activityCreated = _repository.Add(activity, out errors);
                 if (activityCreated == null)
                 {
                     return BadRequest(errors);
