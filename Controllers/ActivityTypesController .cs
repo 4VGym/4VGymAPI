@@ -8,20 +8,13 @@ namespace _4VGymAPI.Controllers
     [Route("activity-types")]
     public class ActivityTypesController : ControllerBase
     {
-        private readonly InMemoryActivityTypeRepository _repository;
         private readonly ActivityTypeRepository _activityTypeRepository;
 
-        // Inyectamos la clase concreta del repositorio
-        public ActivityTypesController(InMemoryActivityTypeRepository repository, ActivityTypeRepository activityTypeRepository)
+        public ActivityTypesController(ActivityTypeRepository activityTypeRepository)
         {
-            _repository = repository;
             _activityTypeRepository = activityTypeRepository;
         }
 
-        /// <summary>
-        /// GET /activity-types
-        /// Devuelve el listado de tipos de actividades de 4VGym.
-        /// </summary>
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<ActivityTypeCreateDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
@@ -44,11 +37,6 @@ namespace _4VGymAPI.Controllers
             }
         }
 
-        /// <summary>
-        /// POST /activity-types
-        /// Añade un nuevo tipo de actividad en 4VGym.
-        /// </summary>
-        /// <param name="activityType">ObjetoActivityType enviado en el cuerpo de la petición (JSON).</param>
         [HttpPost]
         [ProducesResponseType(typeof(ActivityTypeCreateDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
@@ -56,8 +44,6 @@ namespace _4VGymAPI.Controllers
         {
             try
             {
-                // 1. Validación básica de la entrada, objeto no nulo y obligatorio nombre de actividad
-                // Esto se llaman condiciones de barrera!!!
                 if (activityType == null)
                 {
                     return BadRequest(new ErrorResponse(3, "Invalid activity type data"));
@@ -67,17 +53,14 @@ namespace _4VGymAPI.Controllers
                     return BadRequest(new ErrorResponse(4, "The name of the activity is mandatory"));
                 }
 
-                // No puede haber tipos de actividad con el mismo nombre
                 if (await _activityTypeRepository.GetByName(activityType.Name) != null)
                 {
                     return BadRequest(new ErrorResponse(5, "The name is unique, there is already another ActivityType with the same Name"));
                 }
 
 
-                // 2. Insertar/Guardar el objeto usando el repositorio
                 ActivityTypeCreateDto createdActivityType = await _activityTypeRepository.Add(activityType);
 
-                // 3. Retornar respuesta 201 Created con la ubicación o el objeto creado
                 return StatusCode(StatusCodes.Status201Created, createdActivityType);
             }
             catch (Exception)

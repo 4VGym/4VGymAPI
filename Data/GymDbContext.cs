@@ -9,9 +9,7 @@ namespace _4VGymAPI.Data
             : base(options)
         {
         }
-        // Indicamos las clases de modelo para mapearlas a tablas de SQL Server
         public DbSet<Activity> Activities { get; set; }
-        // Añade el resto (piensa cuales debes poner para que se conviertan en tablas)
         public DbSet<ActivityType> ActivityTypes { get; set; }
         public DbSet<Instructor> Instructors { get; set; }
     }

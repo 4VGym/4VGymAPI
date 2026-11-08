@@ -9,21 +9,13 @@ namespace _4VGymAPI.Controllers
     public class ActivityController : ControllerBase
     {
 
-        private readonly InMemoryActivityRepository _repository;
         private readonly ActivityRepository _activityRepository;
 
-        // Inyectamos la clase concreta del repositorio
-        public ActivityController(InMemoryActivityRepository repository, ActivityRepository activityRepository)
+        public ActivityController(ActivityRepository activityRepository)
         {
-            _repository = repository;
             _activityRepository = activityRepository;
         }
 
-        /// <summary>
-        /// POST /activities
-        /// Añade una nueva actividad en 4VGym.
-        /// </summary>
-        /// <param name="activity">ObjetoActivity enviado en el cuerpo de la petición (JSON).</param>
         [HttpPost]
         [ProducesResponseType(typeof(ActivityCreateDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
