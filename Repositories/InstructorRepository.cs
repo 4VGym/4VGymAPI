@@ -32,5 +32,13 @@ namespace _4VGymAPI.Repositories
 
             return new InstructorCreateDto(instructor.Id, instructor.Name, instructor.Email, instructor.PhotoUrl, instructor.Phone);
         }
+
+        public async Task<IEnumerable<InstructorCreateDto>> GetByFirstInitial(string firstInitial)
+        {
+            return await _gymDbContext.Instructors
+                .Where(instructor => instructor.Name.ToUpper().StartsWith(firstInitial.ToUpper()))
+                .Select(instructor => new InstructorCreateDto(instructor.Id, instructor.Name, instructor.Email, instructor.PhotoUrl, instructor.Phone))
+                .ToListAsync();
+        }
     }
 }
