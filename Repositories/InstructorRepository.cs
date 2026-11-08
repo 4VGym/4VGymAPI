@@ -20,5 +20,17 @@ namespace _4VGymAPI.Repositories
                 .Select(instructor => new InstructorCreateDto(instructor.Id, instructor.Name, instructor.Email, instructor.PhotoUrl, instructor.Phone))
                 .ToListAsync();
         }
+
+        public async Task<InstructorCreateDto?> GetById(int id)
+        {
+            Instructor? instructor = await _gymDbContext.Instructors.FindAsync(id);
+
+            if (instructor == null)
+            {
+                return null;
+            }
+
+            return new InstructorCreateDto(instructor.Id, instructor.Name, instructor.Email, instructor.PhotoUrl, instructor.Phone);
+        }
     }
 }
