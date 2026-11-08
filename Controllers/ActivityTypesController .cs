@@ -52,7 +52,7 @@ namespace _4VGymAPI.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(ActivityTypeCreateDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
-        public ActionResult<ActivityTypeCreateDto> CreateActivityType([FromBody] ActivityTypeCreateDto activityType)
+        public async Task<ActionResult<ActivityTypeCreateDto>> CreateActivityType([FromBody] ActivityTypeCreateDto activityType)
         {
             try
             {
@@ -68,14 +68,14 @@ namespace _4VGymAPI.Controllers
                 }
 
                 // No puede haber tipos de actividad con el mismo nombre
-                if (_repository.GetByName(activityType.Name) != null)
+                if (await _activityTypeRepository.GetByName(activityType.Name) != null)
                 {
                     return BadRequest(new ErrorResponse(5, "The name is unique, there is already another ActivityType with the same Name"));
                 }
 
 
                 // 2. Insertar/Guardar el objeto usando el repositorio
-                ActivityTypeCreateDto createdActivityType = _repository.Add(activityType);
+                ActivityTypeCreateDto createdActivityType = await _activityTypeRepository.Add(activityType);
 
                 // 3. Retornar respuesta 201 Created con la ubicación o el objeto creado
                 return StatusCode(StatusCodes.Status201Created, createdActivityType);
