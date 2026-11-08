@@ -39,9 +39,6 @@ builder.Services.AddControllers()
 builder.Services.AddOpenApi();
 
 // Inyección de la clase de repositorio concreta (Singleton para mantener los datos en memoria)
-builder.Services.AddSingleton<InMemoryActivityTypeRepository>();
-builder.Services.AddSingleton<InMemoryInstructorRepository>();
-builder.Services.AddSingleton<InMemoryActivityRepository>();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<GymDbContext>(options => options.UseSqlServer(connectionString));

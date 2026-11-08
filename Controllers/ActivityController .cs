@@ -9,13 +9,11 @@ namespace _4VGymAPI.Controllers
     public class ActivityController : ControllerBase
     {
 
-        private readonly InMemoryActivityRepository _repository;
         private readonly ActivityRepository _activityRepository;
 
         // Inyectamos la clase concreta del repositorio
-        public ActivityController(InMemoryActivityRepository repository, ActivityRepository activityRepository)
+        public ActivityController(ActivityRepository activityRepository)
         {
-            _repository = repository;
             _activityRepository = activityRepository;
         }
 

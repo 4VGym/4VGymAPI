@@ -10,13 +10,11 @@ namespace _4VGymAPI.Controllers
     [Route("instructors")]
     public class InstructorsController : ControllerBase
     {
-        private readonly InMemoryInstructorRepository _repository;
         private readonly InstructorRepository _instructorRepository;
 
         // Inyectamos la clase concreta del repositorio
-        public InstructorsController(InMemoryInstructorRepository repository, InstructorRepository instructorRepository)
+        public InstructorsController(InstructorRepository instructorRepository)
         {
-            _repository = repository;
             _instructorRepository = instructorRepository;
         }
 
