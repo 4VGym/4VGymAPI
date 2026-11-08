@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace _4VGymAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitialCreate7 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -26,7 +26,7 @@ namespace _4VGymAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Instructors",
+                name: "Intructors",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -38,7 +38,7 @@ namespace _4VGymAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Instructors", x => x.Id);
+                    table.PrimaryKey("PK_Intructors", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -47,10 +47,10 @@ namespace _4VGymAPI.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ActivityTypeId = table.Column<int>(type: "int", nullable: true),
                     MaxParticipants = table.Column<int>(type: "int", nullable: false),
                     DateStart = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DateEnd = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    DateEnd = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ActivityTypeId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -66,22 +66,22 @@ namespace _4VGymAPI.Migrations
                 name: "ActivityInstructor",
                 columns: table => new
                 {
-                    ActivityId = table.Column<int>(type: "int", nullable: false),
+                    ActivitiesId = table.Column<int>(type: "int", nullable: false),
                     InstructorsId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ActivityInstructor", x => new { x.ActivityId, x.InstructorsId });
+                    table.PrimaryKey("PK_ActivityInstructor", x => new { x.ActivitiesId, x.InstructorsId });
                     table.ForeignKey(
-                        name: "FK_ActivityInstructor_Activities_ActivityId",
-                        column: x => x.ActivityId,
+                        name: "FK_ActivityInstructor_Activities_ActivitiesId",
+                        column: x => x.ActivitiesId,
                         principalTable: "Activities",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ActivityInstructor_Instructors_InstructorsId",
+                        name: "FK_ActivityInstructor_Intructors_InstructorsId",
                         column: x => x.InstructorsId,
-                        principalTable: "Instructors",
+                        principalTable: "Intructors",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -107,7 +107,7 @@ namespace _4VGymAPI.Migrations
                 name: "Activities");
 
             migrationBuilder.DropTable(
-                name: "Instructors");
+                name: "Intructors");
 
             migrationBuilder.DropTable(
                 name: "ActivityTypes");

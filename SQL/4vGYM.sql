@@ -1,12 +1,12 @@
-﻿IF DB_ID(N'4VGymDB') IS NULL
-    CREATE DATABASE [4VGymDB];
+﻿IF DB_ID(N'4vGYM') IS NULL
+    CREATE DATABASE [4vGYM];
 GO
 
-USE [4VGymDB];
+USE [4vGYM];
 GO
 
-IF DB_NAME() <> N'4VGymDB'
-    THROW 50000, N'No se pudo seleccionar la base de datos 4VGymDB.', 1;
+IF DB_NAME() <> N'4vGYM'
+    THROW 50000, N'No se pudo seleccionar la base de datos 4vGYM.', 1;
 
 IF OBJECT_ID(N'[dbo].[__EFMigrationsHistory]', N'U') IS NULL
     CREATE TABLE [dbo].[__EFMigrationsHistory] (
@@ -23,14 +23,14 @@ IF OBJECT_ID(N'[dbo].[ActivityTypes]', N'U') IS NULL
         CONSTRAINT [PK_ActivityTypes] PRIMARY KEY ([Id])
     );
 
-IF OBJECT_ID(N'[dbo].[Instructors]', N'U') IS NULL
-    CREATE TABLE [dbo].[Instructors] (
+IF OBJECT_ID(N'[dbo].[Intructors]', N'U') IS NULL
+    CREATE TABLE [dbo].[Intructors] (
         [Id] int IDENTITY(1,1) NOT NULL,
         [Name] nvarchar(max) NOT NULL,
         [Email] nvarchar(max) NOT NULL,
         [PhotoUrl] nvarchar(max) NOT NULL,
         [Phone] nvarchar(max) NOT NULL,
-        CONSTRAINT [PK_Instructors] PRIMARY KEY ([Id])
+        CONSTRAINT [PK_Intructors] PRIMARY KEY ([Id])
     );
 
 IF OBJECT_ID(N'[dbo].[Activities]', N'U') IS NULL
@@ -46,11 +46,11 @@ IF OBJECT_ID(N'[dbo].[Activities]', N'U') IS NULL
 
 IF OBJECT_ID(N'[dbo].[ActivityInstructor]', N'U') IS NULL
     CREATE TABLE [dbo].[ActivityInstructor] (
-        [ActivityId] int NOT NULL,
+        [ActivitiesId] int NOT NULL,
         [InstructorsId] int NOT NULL,
-        CONSTRAINT [PK_ActivityInstructor] PRIMARY KEY ([ActivityId], [InstructorsId]),
-        CONSTRAINT [FK_ActivityInstructor_Activities_ActivityId] FOREIGN KEY ([ActivityId]) REFERENCES [dbo].[Activities] ([Id]) ON DELETE CASCADE,
-        CONSTRAINT [FK_ActivityInstructor_Instructors_InstructorsId] FOREIGN KEY ([InstructorsId]) REFERENCES [dbo].[Instructors] ([Id]) ON DELETE CASCADE
+        CONSTRAINT [PK_ActivityInstructor] PRIMARY KEY ([ActivitiesId], [InstructorsId]),
+        CONSTRAINT [FK_ActivityInstructor_Activities_ActivitiesId] FOREIGN KEY ([ActivitiesId]) REFERENCES [dbo].[Activities] ([Id]) ON DELETE CASCADE,
+        CONSTRAINT [FK_ActivityInstructor_Intructors_InstructorsId] FOREIGN KEY ([InstructorsId]) REFERENCES [dbo].[Intructors] ([Id]) ON DELETE CASCADE
     );
 
 IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Activities_ActivityTypeId' AND object_id = OBJECT_ID(N'[dbo].[Activities]'))
@@ -60,8 +60,8 @@ IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_ActivityInstructor_In
     CREATE INDEX [IX_ActivityInstructor_InstructorsId] ON [dbo].[ActivityInstructor] ([InstructorsId]);
 GO
 
-IF DB_NAME() <> N'4VGymDB'
-    THROW 50000, N'No se pudo seleccionar la base de datos 4VGymDB.', 1;
+IF DB_NAME() <> N'4vGYM'
+    THROW 50000, N'No se pudo seleccionar la base de datos 4vGYM.', 1;
 
 SET NOCOUNT ON;
 SET XACT_ABORT ON;
@@ -69,9 +69,9 @@ SET XACT_ABORT ON;
 BEGIN TRY
     BEGIN TRANSACTION;
 
-    IF NOT EXISTS (SELECT 1 FROM [dbo].[__EFMigrationsHistory] WHERE [MigrationId] = N'20261028120454_InitialCreate')
+    IF NOT EXISTS (SELECT 1 FROM [dbo].[__EFMigrationsHistory] WHERE [MigrationId] = N'20261028131152_InitialCreate7')
         INSERT INTO [dbo].[__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-        VALUES (N'20261028120454_InitialCreate', N'10.0.14');
+        VALUES (N'20261028131152_InitialCreate7', N'10.0.14');
 
     IF NOT EXISTS (SELECT 1 FROM [dbo].[ActivityTypes])
     BEGIN
@@ -95,8 +95,8 @@ BEGIN TRY
             (15, N'Movilidad y equilibrio', 1);
         SET IDENTITY_INSERT [dbo].[ActivityTypes] OFF;
 
-        SET IDENTITY_INSERT [dbo].[Instructors] ON;
-        INSERT INTO [dbo].[Instructors] ([Id], [Name], [Email], [PhotoUrl], [Phone])
+        SET IDENTITY_INSERT [dbo].[Intructors] ON;
+        INSERT INTO [dbo].[Intructors] ([Id], [Name], [Email], [PhotoUrl], [Phone])
         VALUES
             (1, N'Adriana Riotorto Olmedilla', N'adriana.riotorto.monitor01@gmail.com', N'https://example.com/fotos/monitor-01.jpg', N'689107919'),
             (2, N'Aitor Casaluz Almendral', N'aitor.casaluz.monitor02@gmail.com', N'https://example.com/fotos/monitor-02.jpg', N'632115838'),
@@ -158,7 +158,7 @@ BEGIN TRY
             (58, N'Víctor Pinarejo Junquera', N'victor.pinarejo.monitor58@gmail.com', N'https://example.com/fotos/monitor-58.jpg', N'644559302'),
             (59, N'Yolanda Solanilla Cañaveral', N'yolanda.solanilla.monitor59@gmail.com', N'https://example.com/fotos/monitor-59.jpg', N'659567221'),
             (60, N'Zacarías Valdeolmos Rosaleda', N'zacarias.valdeolmos.monitor60@gmail.com', N'https://example.com/fotos/monitor-60.jpg', N'632575140');
-        SET IDENTITY_INSERT [dbo].[Instructors] OFF;
+        SET IDENTITY_INSERT [dbo].[Intructors] OFF;
 
         SET IDENTITY_INSERT [dbo].[Activities] ON;
         INSERT INTO [dbo].[Activities] ([Id], [ActivityTypeId], [MaxParticipants], [DateStart], [DateEnd])
@@ -465,7 +465,7 @@ BEGIN TRY
             (300, 11, 13, '2027-01-20T14:15:00', '2027-01-20T15:00:00');
         SET IDENTITY_INSERT [dbo].[Activities] OFF;
 
-        INSERT INTO [dbo].[ActivityInstructor] ([ActivityId], [InstructorsId])
+        INSERT INTO [dbo].[ActivityInstructor] ([ActivitiesId], [InstructorsId])
         VALUES
             (1, 57),
             (1, 16),

@@ -12,8 +12,8 @@ using _4VGymAPI.Data;
 namespace _4VGymAPI.Migrations
 {
     [DbContext(typeof(GymDbContext))]
-    [Migration("20261028120454_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20261028131152_InitialCreate7")]
+    partial class InitialCreate7
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,13 +27,13 @@ namespace _4VGymAPI.Migrations
 
             modelBuilder.Entity("ActivityInstructor", b =>
                 {
-                    b.Property<int>("ActivityId")
+                    b.Property<int>("ActivitiesId")
                         .HasColumnType("int");
 
                     b.Property<int>("InstructorsId")
                         .HasColumnType("int");
 
-                    b.HasKey("ActivityId", "InstructorsId");
+                    b.HasKey("ActivitiesId", "InstructorsId");
 
                     b.HasIndex("InstructorsId");
 
@@ -113,14 +113,14 @@ namespace _4VGymAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Instructors");
+                    b.ToTable("Intructors");
                 });
 
             modelBuilder.Entity("ActivityInstructor", b =>
                 {
                     b.HasOne("_4VGymAPI.Models.Activity", null)
                         .WithMany()
-                        .HasForeignKey("ActivityId")
+                        .HasForeignKey("ActivitiesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

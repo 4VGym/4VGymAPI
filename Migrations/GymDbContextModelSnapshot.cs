@@ -24,13 +24,13 @@ namespace _4VGymAPI.Migrations
 
             modelBuilder.Entity("ActivityInstructor", b =>
                 {
-                    b.Property<int>("ActivityId")
+                    b.Property<int>("ActivitiesId")
                         .HasColumnType("int");
 
                     b.Property<int>("InstructorsId")
                         .HasColumnType("int");
 
-                    b.HasKey("ActivityId", "InstructorsId");
+                    b.HasKey("ActivitiesId", "InstructorsId");
 
                     b.HasIndex("InstructorsId");
 
@@ -110,14 +110,14 @@ namespace _4VGymAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Instructors");
+                    b.ToTable("Intructors");
                 });
 
             modelBuilder.Entity("ActivityInstructor", b =>
                 {
                     b.HasOne("_4VGymAPI.Models.Activity", null)
                         .WithMany()
-                        .HasForeignKey("ActivityId")
+                        .HasForeignKey("ActivitiesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

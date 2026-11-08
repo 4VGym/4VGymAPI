@@ -16,14 +16,14 @@ namespace _4VGymAPI.Repositories
 
         public async Task<IEnumerable<InstructorCreateDto>> GetAll()
         {
-            return await _gymDbContext.Instructors
+            return await _gymDbContext.Intructors
                 .Select(instructor => new InstructorCreateDto(instructor.Id, instructor.Name, instructor.Email, instructor.PhotoUrl, instructor.Phone))
                 .ToListAsync();
         }
 
         public async Task<InstructorCreateDto?> GetById(int id)
         {
-            Instructor? instructor = await _gymDbContext.Instructors.FindAsync(id);
+            Instructor? instructor = await _gymDbContext.Intructors.FindAsync(id);
 
             if (instructor == null)
             {
@@ -35,7 +35,7 @@ namespace _4VGymAPI.Repositories
 
         public async Task<IEnumerable<InstructorCreateDto>> GetByFirstInitial(string firstInitial)
         {
-            return await _gymDbContext.Instructors
+            return await _gymDbContext.Intructors
                 .Where(instructor => instructor.Name.ToUpper().StartsWith(firstInitial.ToUpper()))
                 .Select(instructor => new InstructorCreateDto(instructor.Id, instructor.Name, instructor.Email, instructor.PhotoUrl, instructor.Phone))
                 .ToListAsync();
@@ -43,7 +43,7 @@ namespace _4VGymAPI.Repositories
 
         public async Task<InstructorCreateDto?> Add(InstructorCreateDto instructorNew)
         {
-            bool exists = await _gymDbContext.Instructors.AnyAsync(instructor =>
+            bool exists = await _gymDbContext.Intructors.AnyAsync(instructor =>
                 instructor.Email.ToUpper() == instructorNew.Email.ToUpper() ||
                 instructor.Name.ToUpper() == instructorNew.Name.ToUpper());
 
@@ -60,7 +60,7 @@ namespace _4VGymAPI.Repositories
                 Phone = instructorNew.Phone
             };
 
-            _gymDbContext.Instructors.Add(instructor);
+            _gymDbContext.Intructors.Add(instructor);
             await _gymDbContext.SaveChangesAsync();
 
             return new InstructorCreateDto(instructor.Id, instructor.Name, instructor.Email, instructor.PhotoUrl, instructor.Phone);
