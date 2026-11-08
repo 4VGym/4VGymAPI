@@ -11,25 +11,27 @@ namespace _4VGymAPI.Controllers
     public class InstructorsController : ControllerBase
     {
         private readonly InMemoryInstructorRepository _repository;
+        private readonly InstructorRepository _instructorRepository;
 
         // Inyectamos la clase concreta del repositorio
-        public InstructorsController(InMemoryInstructorRepository repository)
+        public InstructorsController(InMemoryInstructorRepository repository, InstructorRepository instructorRepository)
         {
             _repository = repository;
+            _instructorRepository = instructorRepository;
         }
 
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<InstructorCreateDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        public ActionResult<IEnumerable<InstructorCreateDto>> GetInstructors([FromQuery] int? id, [FromQuery(Name = "first_initial")] string? firstInitial)
+        public async Task<ActionResult<IEnumerable<InstructorCreateDto>>> GetInstructors([FromQuery] int? id, [FromQuery(Name = "first_initial")] string? firstInitial)
         {
             try
             {
                 // 1. Búsqueda por ID (retorna una lista de 1 solo elemento)
                 if (id.HasValue)
                 {
-                    InstructorCreateDto? instructor = _repository.GetById(id.Value);
+                    InstructorCreateDto? instructor = await _instructorRepository.GetById(id.Value);
                     if (instructor == null)
                     {
                         return NotFound(new ErrorResponse(2, $"No existe el instructor con ID {id.Value}"));
@@ -40,12 +42,12 @@ namespace _4VGymAPI.Controllers
                 // 2. Búsqueda por inicial
                 if (!string.IsNullOrWhiteSpace(firstInitial))
                 {
-                    IEnumerable<InstructorCreateDto> instructorsByInitial = _repository.GetByFirstInitial(firstInitial);
+                    IEnumerable<InstructorCreateDto> instructorsByInitial = await _instructorRepository.GetByFirstInitial(firstInitial);
                     return Ok(instructorsByInitial);
                 }
 
                 // 3. Sin parámetros: devuelve todos los instructores
-                IEnumerable<InstructorCreateDto> allInstructors = _repository.GetAll();
+                IEnumerable<InstructorCreateDto> allInstructors = await _instructorRepository.GetAll();
                 return Ok(allInstructors);
             }
             catch (Exception ex)
