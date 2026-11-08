@@ -66,7 +66,7 @@ namespace _4VGymAPI.Controllers
         [ProducesResponseType(typeof(InstructorCreateDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        public ActionResult<InstructorCreateDto> CreateInstructor([FromBody] InstructorCreateDto instructorNew)
+        public async Task<ActionResult<InstructorCreateDto>> CreateInstructor([FromBody] InstructorCreateDto instructorNew)
         {
             try
             {
@@ -106,10 +106,10 @@ namespace _4VGymAPI.Controllers
 
 
                 // LLamamos al método para añadirlo en el repositorio
-                InstructorCreateDto? instructor = _repository.Add(instructorNew, out ErrorResponse? errorResponse);
-                if (errorResponse != null)
+                InstructorCreateDto? instructor = await _instructorRepository.Add(instructorNew);
+                if (instructor == null)
                 {
-                    return BadRequest(errorResponse);
+                    return BadRequest(new ErrorResponse(34, "An instructor with the same email or name already exists"));
                 }
                 // Respuesta 201 Created con el objeto InstructorCreateDto realmente creado, incluyendo el Id
                 return StatusCode(StatusCodes.Status201Created, instructor);
