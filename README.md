@@ -11,10 +11,10 @@ API REST para gestionar las actividades, los tipos de actividad y los monitores 
 ## Puesta en marcha
 
 1. Revisa la cadena de conexión `DefaultConnection` en `appsettings.json` y cambia el servidor `.\\SQLEXPRESS` por el tuyo si es distinto.
-2. Crea la base de datos `4VGymDB` y carga los datos de ejemplo:
+2. Crea la base de datos `4vGYM` y carga los datos de ejemplo:
 
    ```bash
-   sqlcmd -S ".\SQLEXPRESS" -E -C -f 65001 -i "SQL\4VGymDB.sql"
+   sqlcmd -S ".\SQLEXPRESS" -E -C -f 65001 -i "SQL\4vGYM.sql"
    ```
 
 3. Arranca la API:
@@ -65,3 +65,14 @@ Sí. Las entidades de `Models` tienen propiedades de navegación, como `Instruct
 ### Inserciones en los POST
 
 El enunciado no exigía insertar en la base de datos, pero los POST sí guardan los datos además de validarlos, con `Add` y `SaveChangesAsync`.
+
+## Versiones y base de datos
+
+Hay dos versiones publicadas, según la base de datos que se quiera usar:
+
+| Versión | Base de datos | Compatible con |
+|---|---|---|
+| `v1.1.0` | `4vGYM`, tablas `Intructors` y `ActivityInstructor` con `ActivitiesId` | La migración `InitialCreate7` de 4VGymEF |
+| `v1.0.0` | `4VGymDB`, tablas `Instructors` y `ActivityInstructor` con `ActivityId` | Una versión anterior de la migración; no funciona con una base creada con `InitialCreate7` |
+
+La tabla `Intructors` conserva el nombre con el que la define 4VGymEF para mantener la compatibilidad.
