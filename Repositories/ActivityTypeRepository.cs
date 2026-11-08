@@ -1,5 +1,6 @@
 using _4VGymAPI.Data;
 using _4VGymAPI.Dtos;
+using _4VGymAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace _4VGymAPI.Repositories
@@ -26,6 +27,21 @@ namespace _4VGymAPI.Repositories
                 .Where(activityType => activityType.Name.ToUpper() == name.ToUpper())
                 .Select(activityType => new ActivityTypeCreateDto(activityType.Id, activityType.Name, activityType.NumberMonitors))
                 .SingleOrDefaultAsync();
+        }
+
+        public async Task<ActivityTypeCreateDto> Add(ActivityTypeCreateDto activityType)
+        {
+            ActivityType newActivityType = new ActivityType
+            {
+                Name = activityType.Name,
+                NumberMonitors = activityType.NumberMonitors
+            };
+
+            _gymDbContext.ActivityTypes.Add(newActivityType);
+            await _gymDbContext.SaveChangesAsync();
+
+            activityType.Id = newActivityType.Id;
+            return activityType;
         }
     }
 }
