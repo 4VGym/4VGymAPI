@@ -2,6 +2,7 @@
 using _4VGymAPI.Data;
 using _4VGymAPI.Dtos;
 using _4VGymAPI.Repositories;
+using Microsoft.AspNetCore.OpenApi;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,7 +33,11 @@ builder.Services.AddControllers()
     });
 
 
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi(options =>
+{
+    options.CreateSchemaReferenceId = typeInfo =>
+        OpenApiOptions.CreateDefaultSchemaReferenceId(typeInfo)?.Replace("CreateDto", string.Empty);
+});
 
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
