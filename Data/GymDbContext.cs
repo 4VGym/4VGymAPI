@@ -11,7 +11,7 @@ namespace _4VGymAPI.Data
         }
         public DbSet<Activity> Activities { get; set; }
         public DbSet<ActivityType> ActivityTypes { get; set; }
-        public DbSet<Instructor> Instructors { get; set; }
+        public DbSet<Instructor> Intructors { get; set; }
     }
 
 }

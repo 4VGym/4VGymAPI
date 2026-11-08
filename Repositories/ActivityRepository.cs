@@ -38,7 +38,7 @@ namespace _4VGymAPI.Repositories
                 return null;
             }
 
-            List<Instructor> instructors = await _gymDbContext.Instructors
+            List<Instructor> instructors = await _gymDbContext.Intructors
                 .Where(instructor => activity.InstructorsId.Contains(instructor.Id))
                 .ToListAsync();
 
