@@ -19,5 +19,13 @@ namespace _4VGymAPI.Repositories
                 .Select(activityType => new ActivityTypeCreateDto(activityType.Id, activityType.Name, activityType.NumberMonitors))
                 .ToListAsync();
         }
+
+        public async Task<ActivityTypeCreateDto?> GetByName(string name)
+        {
+            return await _gymDbContext.ActivityTypes
+                .Where(activityType => activityType.Name.ToUpper() == name.ToUpper())
+                .Select(activityType => new ActivityTypeCreateDto(activityType.Id, activityType.Name, activityType.NumberMonitors))
+                .SingleOrDefaultAsync();
+        }
     }
 }
