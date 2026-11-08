@@ -1,17 +1,17 @@
 # 4VGymAPI
 
-API REST para gestionar las actividades, los tipos de actividad y los monitores del gimnasio 4VGym. Une dos proyectos: mantiene la definición de la API de 4VGymAPI y guarda los datos en la base de datos SQL Server de 4VGymEF, mediante Entity Framework.
+Esta es la entrega de la API del gimnasio. Junta los dos proyectos: la API es la de 4VGymAPI, pero ahora los datos se guardan en la base de datos de 4VGymEF con Entity Framework, en vez de en listas en memoria.
 
-## Requisitos
+## Qué hace falta
 
 - .NET 10
 - SQL Server
-- Herramienta `sqlcmd`, para cargar el script de datos
+- sqlcmd para cargar el script
 
-## Puesta en marcha
+## Cómo arrancarlo
 
-1. Revisa la cadena de conexión `DefaultConnection` en `appsettings.json` y cambia el servidor `.\\SQLEXPRESS` por el tuyo si es distinto.
-2. Crea la base de datos `4vGYM` y carga los datos de ejemplo:
+1. En `appsettings.json` está la conexión. Yo uso `.\\SQLEXPRESS`, si tu servidor es otro hay que cambiarlo ahí.
+2. Ejecuta el script. Crea la base `4vGYM` y mete los datos:
 
    ```bash
    sqlcmd -S ".\SQLEXPRESS" -E -C -f 65001 -i "SQL\4vGYM.sql"
@@ -23,56 +23,60 @@ API REST para gestionar las actividades, los tipos de actividad y los monitores 
    dotnet run
    ```
 
-4. En desarrollo, la documentación está en `/swagger` y la especificación OpenAPI en `/openapi/v1.json`.
+4. El Swagger está en `/swagger`.
 
-El script se puede ejecutar más de una vez sin duplicar datos. Carga 15 tipos de actividad, 60 monitores, 300 actividades y sus asignaciones de monitores, todos ficticios.
+El script se puede ejecutar más de una vez y no repite los datos. Mete 15 tipos de actividad, 60 monitores y 300 actividades. Son datos inventados.
 
 ## Endpoints
 
-| Método | Ruta | Descripción |
+Son los mismos que tenía la API.
+
+| Método | Ruta | Qué hace |
 |---|---|---|
-| GET | `/activity-types` | Lista los tipos de actividad |
+| GET | `/activity-types` | Saca los tipos de actividad |
 | POST | `/activity-types` | Crea un tipo de actividad |
-| GET | `/instructors` | Lista los monitores; admite `id` y `first_initial` |
+| GET | `/instructors` | Saca los monitores, se puede filtrar por `id` o `first_initial` |
 | POST | `/instructors` | Crea un monitor |
 | POST | `/activities` | Crea una actividad |
 
-## Estructura
+## Carpetas
 
-| Carpeta | Contenido |
+| Carpeta | Qué hay |
 |---|---|
-| `Controllers` | Reciben la petición y devuelven la respuesta HTTP |
-| `Dtos` | Objetos de entrada y salida de la API |
-| `Models` | Entidades que Entity Framework mapea a las tablas |
-| `Data` | `GymDbContext` |
-| `Migrations` | Definición de la base de datos |
-| `Repositories` | Acceso a los datos; son la unión entre la API y la base de datos |
-| `Validations` | Atributos de validación propios |
-| `SQL` | Script con los datos de ejemplo |
+| `Controllers` | Los endpoints |
+| `Dtos` | Las clases que entran y salen por la API |
+| `Models` | Las clases de las tablas |
+| `Data` | El `GymDbContext` |
+| `Migrations` | La migración de 4VGymEF |
+| `Repositories` | Los repositorios, que es donde se une la API con la base de datos |
+| `Validations` | Las validaciones de las fechas |
+| `SQL` | El script con los datos |
 
 ## Decisiones
 
-### Separar los modelos de base de datos y los DTO
+### ¿Modelos y DTO separados?
 
-Sí. Las entidades de `Models` tienen propiedades de navegación, como `Instructors`, mientras que la API trabaja con identificadores, como `instructors_id`. Separarlas mantiene el mismo JSON que la API original y evita los ciclos al serializar. El documento OpenAPI conserva los nombres originales de los esquemas: `Activity`, `ActivityType` e `Instructor`.
+Sí. Los modelos tienen relaciones, por ejemplo una actividad tiene una lista de `Instructors`, pero en la API solo se pasan los ids en `instructors_id`. Si usara lo mismo para las dos cosas cambiaría el JSON y además saldrían ciclos al convertirlo. En el Swagger los nombres siguen siendo `Activity`, `ActivityType` e `Instructor`, para que sea igual que el original.
 
-### Dónde se hacen las validaciones
+### ¿Dónde están las validaciones?
 
-- **DTO:** las reglas sobre un solo objeto que se expresan con atributos: campos obligatorios, aforo y fechas de la actividad.
-- **Controladores:** las validaciones de entrada de tipos de actividad y monitores: nombre, teléfono, email y URL de la foto.
-- **Repositorios:** las reglas que necesitan consultar la base de datos: duplicados de monitores y existencia del tipo de actividad y de los monitores. La comprobación de nombre repetido de tipo de actividad la decide el controlador, consultando al repositorio.
+- En los DTO: campos obligatorios, aforo y fechas de la actividad.
+- En los controladores: nombre, teléfono, email y foto.
+- En los repositorios: lo que hay que mirar en la base de datos, como si el monitor ya existe o si existen el tipo de actividad y los monitores de una actividad.
 
-### Inserciones en los POST
+El nombre repetido de un tipo de actividad lo comprueba el controlador, pero preguntando al repositorio.
 
-El enunciado no exigía insertar en la base de datos, pero los POST sí guardan los datos además de validarlos, con `Add` y `SaveChangesAsync`.
+### ¿Los POST guardan?
 
-## Versiones y base de datos
+Sí. El enunciado decía que no hacía falta, pero guardan los datos además de validarlos.
 
-Hay dos versiones publicadas, según la base de datos que se quiera usar:
+## Versiones
 
-| Versión | Base de datos | Compatible con |
-|---|---|---|
-| `v1.1.0` | `4vGYM`, tablas `Intructors` y `ActivityInstructor` con `ActivitiesId` | La migración `InitialCreate7` de 4VGymEF |
-| `v1.0.0` | `4VGymDB`, tablas `Instructors` y `ActivityInstructor` con `ActivityId` | Una versión anterior de la migración; no funciona con una base creada con `InitialCreate7` |
+Hay dos releases porque tenía dos versiones de la base de datos:
 
-La tabla `Intructors` conserva el nombre con el que la define 4VGymEF para mantener la compatibilidad.
+| Versión | Base | Tablas | Con qué funciona |
+|---|---|---|---|
+| `v1.1.0` | `4vGYM` | `Intructors` y `ActivitiesId` | Con la migración `InitialCreate7` de 4VGymEF |
+| `v1.0.0` | `4VGymDB` | `Instructors` y `ActivityId` | Con una migración anterior, no con `InitialCreate7` |
+
+La tabla `Intructors` está escrita así porque en 4VGymEF se llama así, y si la cambio deja de ser compatible.
