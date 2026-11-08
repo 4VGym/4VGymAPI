@@ -1,7 +1,9 @@
 
+using _4VGymAPI.Data;
 using _4VGymAPI.Dtos;
 using _4VGymAPI.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,6 +42,9 @@ builder.Services.AddOpenApi();
 builder.Services.AddSingleton<InMemoryActivityTypeRepository>();
 builder.Services.AddSingleton<InMemoryInstructorRepository>();
 builder.Services.AddSingleton<InMemoryActivityRepository>();
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<GymDbContext>(options => options.UseSqlServer(connectionString));
 
 // Contruir la aplicacion
 var app = builder.Build();
