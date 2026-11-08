@@ -43,5 +43,22 @@ namespace _4VGymAPI.Repositories
             activityType.Id = newActivityType.Id;
             return activityType;
         }
+
+        public async Task<ActivityTypeCreateDto?> GetById(int? id)
+        {
+            if (id == null)
+            {
+                return null;
+            }
+
+            ActivityType? activityType = await _gymDbContext.ActivityTypes.FindAsync(id);
+
+            if (activityType == null)
+            {
+                return null;
+            }
+
+            return new ActivityTypeCreateDto(activityType.Id, activityType.Name, activityType.NumberMonitors);
+        }
     }
 }
