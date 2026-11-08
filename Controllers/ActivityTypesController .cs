@@ -9,11 +9,13 @@ namespace _4VGymAPI.Controllers
     public class ActivityTypesController : ControllerBase
     {
         private readonly InMemoryActivityTypeRepository _repository;
+        private readonly ActivityTypeRepository _activityTypeRepository;
 
         // Inyectamos la clase concreta del repositorio
-        public ActivityTypesController(InMemoryActivityTypeRepository repository)
+        public ActivityTypesController(InMemoryActivityTypeRepository repository, ActivityTypeRepository activityTypeRepository)
         {
             _repository = repository;
+            _activityTypeRepository = activityTypeRepository;
         }
 
         /// <summary>
@@ -23,11 +25,11 @@ namespace _4VGymAPI.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<ActivityTypeCreateDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
-        public ActionResult<IEnumerable<ActivityTypeCreateDto>> FindActivityTypes()
+        public async Task<ActionResult<IEnumerable<ActivityTypeCreateDto>>> FindActivityTypes()
         {
             try
             {
-                IEnumerable<ActivityTypeCreateDto> activityTypes = _repository.GetAll();
+                IEnumerable<ActivityTypeCreateDto> activityTypes = await _activityTypeRepository.GetAll();
 
                 if (activityTypes == null || activityTypes.Count() == 0)
                 {
