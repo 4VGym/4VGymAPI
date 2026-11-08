@@ -8,6 +8,8 @@ namespace _4VGymAPI.Models
     {
         public int Id { get; set; }
 
+        public int? ActivityTypeId { get; set; }
+
         public int MaxParticipants { get; set; }
 
         public DateTime DateStart { get; set; }

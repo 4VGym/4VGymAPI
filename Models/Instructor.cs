@@ -14,7 +14,7 @@ namespace _4VGymAPI.Models
 
         public string Phone { get; set; } = string.Empty;
 
-        public ICollection<Activity> Activities { get; set; } = new List<Activity>();
+        public ICollection<Activity> Activity { get; set; } = new List<Activity>();
 
     }
 }
