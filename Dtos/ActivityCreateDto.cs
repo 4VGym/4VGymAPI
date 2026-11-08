@@ -2,9 +2,9 @@
 using System.Text.Json.Serialization;
 using _4VGymAPI.Validations;
 
-namespace _4VGymAPI.Models
+namespace _4VGymAPI.Dtos
 {
-    public class Activity
+    public class ActivityCreateDto
     {
         public int Id { get; set; }
 

@@ -1,8 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace _4VGymAPI.Models
+namespace _4VGymAPI.Dtos
 {
-    public class Instructor
+    public class InstructorCreateDto
     {
 
         [JsonPropertyName("id")]
@@ -21,11 +21,11 @@ namespace _4VGymAPI.Models
         [JsonPropertyName("phone")]
         public string Phone { get; set; } = string.Empty;
 
-        public Instructor()
+        public InstructorCreateDto()
         {
         }
 
-        public Instructor(int id, string name, string email, string photoUrl, string phone)
+        public InstructorCreateDto(int id, string name, string email, string photoUrl, string phone)
         {
             Id = id;
             Name = name;
