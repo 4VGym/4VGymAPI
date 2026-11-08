@@ -47,6 +47,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<GymDbContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddScoped<ActivityTypeRepository>();
 builder.Services.AddScoped<InstructorRepository>();
+builder.Services.AddScoped<ActivityRepository>();
 
 // Contruir la aplicacion
 var app = builder.Build();
