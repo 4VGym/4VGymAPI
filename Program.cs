@@ -45,6 +45,7 @@ builder.Services.AddSingleton<InMemoryActivityRepository>();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<GymDbContext>(options => options.UseSqlServer(connectionString));
+builder.Services.AddScoped<ActivityTypeRepository>();
 
 // Contruir la aplicacion
 var app = builder.Build();
